@@ -124,6 +124,37 @@ function loadImages(sources) {
         ctx.fillText('(Press any key to continue or wait)', canvas.width / 2, canvas.height / 2 + 20);
     }
 
+    function resetGame() {
+    // Reset player (medic) position n health
+    potX = 240;
+    potY = 240;
+    hp = 5;
+
+    // Reset teams
+    teamTop = [];
+    teamBottom = [];
+    for (var i = 0; i < 5; i++) {
+        teamTop.push({ x: Math.random() * 500, y: 50, fading: 0, alive: true });
+        teamBottom.push({ x: Math.random() * 500, y: 450, fading: 0, alive: true });
+    }
+
+    // Reset pellets n first aid kits
+    pellets = [];
+    firstAidKits = [];
+
+    // Reset day n countdown 2 Christmas
+    currentDay = 1;
+    daysToChristmas = 5;
+    dayTime = 0;
+    isDayOver = false;
+
+    // Start da music or other sounds again if needed
+
+    // Start game loop again
+    gameLoop();
+}
+
+
     // Listen for keypress to continue after day ends
     document.addEventListener('keydown', function() {
         if (isDayOver) {
@@ -323,11 +354,11 @@ for (var i = 0; i < 5; i++) {
         function checkGameOver() {
             if (teamTop.every(guy => !guy.alive) || teamBottom.every(guy => !guy.alive)) {
                 alert('All boyz dead! Peace failed!');
-                document.location.reload(); // restart game
+                resetGame(); // restart game
             }
             if (hp <= 0) {
                 alert('u dead! Game over.');
-                document.location.reload(); // restart game
+                resetGame(); // restart game
             }
         }
 
