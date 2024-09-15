@@ -70,37 +70,24 @@ function startMusic() {
     document.removeEventListener('click', startMusic);   // same for click
 }
 // Function 2 handle touch events
-function handleTouch(e) {
+var isTouching = false;
+var targetX = null;
+var targetY = null;
+
+// Function to handle touch start events
+function handleTouchStart(e) {
     e.preventDefault(); // prevent default scrolling behavior
     var touch = e.touches[0]; // get the first touch
-    var touchX = touch.clientX - canvas.offsetLeft;
-    var touchY = touch.clientY - canvas.offsetTop;
-
-    // Move the medic to the touch position
-    moveTo(touchX, touchY);
+    targetX = touch.clientX - canvas.offsetLeft;
+    targetY = touch.clientY - canvas.offsetTop;
+    isTouching = true; // set touch state to active
 }
 
-// Move the medic to the target position
-function moveTo(targetX, targetY) {
-    var dx = targetX - (potX + potWidth / 2);
-    var dy = targetY - (potY + potHeight / 2);
-    var distance = Math.sqrt(dx * dx + dy * dy);
-
-    // Move the medic in steps towards the target position
-    if (distance > 5) {
-        var stepSize = 5; // size of each movement step
-        var moveX = (dx / distance) * stepSize;
-        var moveY = (dy / distance) * stepSize;
-
-        potX += moveX;
-        potY += moveY;
-
-        if (potX < 0) potX = 0;
-        if (potY < 0) potY = 0;
-        if (potX > canvas.width - potWidth) potX = canvas.width - potWidth;
-        if (potY > canvas.height - potHeight) potY = canvas.height - potHeight;
-    }
+// Function to handle touch end events
+function handleTouchEnd(e) {
+    isTouching = false; // set touch state to inactive
 }
+
 
 // Add touch event listener
 canvas.addEventListener('touchstart', handleTouch);
@@ -220,6 +207,31 @@ for (var i = 0; i < 5; i++) {
         // Update position if arrow keyz held down
         function updatePosition() {
             if (!isDayOver) {
+                //touch
+                if (isTouching && targetX !== null && targetY !== null) {
+        var dx = targetX - (potX + potWidth / 2);
+        var dy = targetY - (potY + potHeight / 2);
+        var distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > 5) {
+            var stepSize = 3; // smaller step size for smoother movement
+            var moveX = (dx / distance) * stepSize;
+            var moveY = (dy / distance) * stepSize;
+
+            potX += moveX;
+            potY += moveY;
+
+            if (potX < 0) potX = 0;
+            if (potY < 0) potY = 0;
+            if (potX > canvas.width - potWidth) potX = canvas.width - potWidth;
+            if (potY > canvas.height - potHeight) potY = canvas.height - potHeight;
+        } else {
+            // Stop movement when close to the target
+            targetX = null;
+            targetY = null;
+        }
+    }
+                //end touch
                 if (keysPressed['ArrowUp']) potY -= 5;
                 if (keysPressed['ArrowDown']) potY += 5;
                 if (keysPressed['ArrowLeft']) potX -= 5;
