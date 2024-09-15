@@ -23,8 +23,8 @@
     </style>
 </head>
 <body>
-    <h1>5 Days Till Christmas Pasta Feast!</h1>
-    <canvas id="gameCanvas" width="500" height="500"></canvas>
+    <h1>5 Days Till Christmas: Heal the Soldiers!</h1>
+    <canvas id="gameCanvas" width="750" height="750"></canvas>
     <button onclick="return startMusic()">Start Music!</button>
     <script>
         var canvas = document.getElementById('gameCanvas');
@@ -69,6 +69,41 @@ function startMusic() {
     document.removeEventListener('keydown', startMusic); // remove listener after play
     document.removeEventListener('click', startMusic);   // same for click
 }
+// Function 2 handle touch events
+function handleTouch(e) {
+    e.preventDefault(); // prevent default scrolling behavior
+    var touch = e.touches[0]; // get the first touch
+    var touchX = touch.clientX - canvas.offsetLeft;
+    var touchY = touch.clientY - canvas.offsetTop;
+
+    // Move the medic to the touch position
+    moveTo(touchX, touchY);
+}
+
+// Move the medic to the target position
+function moveTo(targetX, targetY) {
+    var dx = targetX - (potX + potWidth / 2);
+    var dy = targetY - (potY + potHeight / 2);
+    var distance = Math.sqrt(dx * dx + dy * dy);
+
+    // Move the medic in steps towards the target position
+    if (distance > 5) {
+        var stepSize = 5; // size of each movement step
+        var moveX = (dx / distance) * stepSize;
+        var moveY = (dy / distance) * stepSize;
+
+        potX += moveX;
+        potY += moveY;
+
+        if (potX < 0) potX = 0;
+        if (potY < 0) potY = 0;
+        if (potX > canvas.width - potWidth) potX = canvas.width - potWidth;
+        if (potY > canvas.height - potHeight) potY = canvas.height - potHeight;
+    }
+}
+
+// Add touch event listener
+canvas.addEventListener('touchstart', handleTouch);
 
 // Add event listeners for user interaction
 document.addEventListener('keydown', startMusic);
