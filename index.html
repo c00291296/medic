@@ -87,10 +87,9 @@ function handleTouchStart(e) {
 function handleTouchEnd(e) {
     isTouching = false; // set touch state to inactive
 }
+canvas.addEventListener('touchstart', handleTouchStart);
+canvas.addEventListener('touchend', handleTouchEnd);
 
-
-// Add touch event listener
-canvas.addEventListener('touchstart', handleTouch);
 
 // Add event listeners for user interaction
 document.addEventListener('keydown', startMusic);
